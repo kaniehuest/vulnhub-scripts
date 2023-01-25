@@ -1,3 +1,3 @@
-# vulnhub-scripts
+# Vulnhub scripts
 
 ![](/images/IMF.gif)
